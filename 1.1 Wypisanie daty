@@ -1,0 +1,15 @@
+# C-home
+using System;
+
+
+namespace _1._1_Pierwszy_program_co_wypisuje_napis_i_datę
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Siema, dziś jest {0}",DateTime.Now);
+            Console.ReadKey();
+        }
+    }
+}
