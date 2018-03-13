@@ -79,17 +79,17 @@ namespace Zad_2_PO
                         string wiek = substrings[2];
                         string skutecznosc = substrings[3];
                         float f= float.Parse(s:skutecznosc);
-                        if (imie.Length > 3)
+                        if (f > skutecznoscmax)
                         {
-                            //skutecznoscmax = f;
+                            skutecznoscmax = f;
                             if (nazwisko.IndexOf("ski") != -1)
                             {
-                                if (f > skutecznoscmax)
+                                if (imie.Length > 3)
                                 {
                                     nazwiskomax = nazwisko;
                                     imiemax = imie;
                                     wiekmax = int.Parse(s:wiek);
-                                    Console.WriteLine("siema");
+                                   // Console.WriteLine("test");
                                 }
                             }
                         }
