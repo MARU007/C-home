@@ -1,0 +1,139 @@
+# C-home
+using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+/*Otwórz plik tekstowy(stwórz go samodzielnie) o nazwie wczytanej z klawiatury, 
+ * w którym w zapisane są dane osób w następującym formacie(dane jednej osoby zajmują 1 linię):
+
+imię nazwisko wiek(w latach - int) skuteczność(w procentach - float)
+
+Z pliku wybierz osobę o następujących cechach:
+
+    imię ma długość > 3 litery
+
+    nazwisko kończy się na "ski"
+
+    ma najwyższą skuteczność spośród wszystkich osób w pliku
+
+i wpisz jej zanonimizowane imię i nazwisko oraz wiek do pliku o nazwie takiej, 
+jak nazwa pliku wejściowego z doklejoną końcówka ".max". Anonimizacja ma polegać 
+na zostawieniu pierwszej i 3 ostatnich litery w oryginalnej formie oraz zastąpienie 
+wszystkich środkowych przez znak '*' ("Kowalski" => "K****ski").
+
+Jeśli nie będzie osoby spełniającej te wymagania, stwórz plik z pustą linią.
+Jeżeli będzie więcej niż 1 osoba z maksymalną skutecznością, wpisz je wszystkie do pliku.*/
+namespace Zad_2_PO
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string name_file;
+            Console.WriteLine("Podaj jak ma się nazywać plik który będzie przechwoywał dane osób: ");
+            name_file = Console.ReadLine();
+            FileStream fs = new FileStream(name_file + ".txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
+
+            try
+            {
+                StreamWriter sw = new StreamWriter(fs);
+
+                sw.WriteLine("Tomek Kowalski 18 80 %"); 
+                sw.WriteLine("Ola Kot 20 60 %");
+                sw.WriteLine("Magda Rusiecka 21 60 %");
+                sw.WriteLine("Darek Czarek 32 70 %");
+                sw.WriteLine("Mateusz Buszyski 22 80 %");
+
+                sw.Close();
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Nie działa");
+            }
+
+
+            int tabSize = 1;
+            float skutecznoscmax = 0;
+            int wiekmax = 0;
+            string imiemax = "", nazwiskomax = "0";
+            using (StreamReader sr = File.OpenText(name_file + ".txt"))
+            {
+                StreamWriter sr2;
+                using (sr2 = new StreamWriter(name_file + ".max.txt"))
+                {
+
+
+
+                    string s = String.Empty;
+                    float skutecznoscmax2=0;
+                   
+                    while ((s = sr.ReadLine()) != null)
+                    {
+                       // Console.WriteLine("siema");
+                        string newLine = s.PadRight(tabSize, ' ');
+                        string[] substrings = s.Split(' ');
+                        string skutecznosc = substrings[3];
+                        float f = float.Parse(s: skutecznosc);
+                        if (f > skutecznoscmax2)
+                        {
+                            skutecznoscmax2 = f;
+                        }
+                     
+                    }
+                    sr.BaseStream.Seek(0, SeekOrigin.Begin);
+                    int p=0;
+                    while ((s = sr.ReadLine()) != null)
+                    {
+                        string newLine = s.PadRight(tabSize, ' ');
+                        Console.WriteLine(s);
+                        string[] substrings = s.Split(' ');
+
+                        string imie = substrings[0];
+                        string nazwisko = substrings[1];
+                        string wiek = substrings[2];
+                        string skutecznosc = substrings[3];
+                        float f = float.Parse(s: skutecznosc);
+                        if (f >= skutecznoscmax)
+                        {
+                            skutecznoscmax = f;
+                            if (skutecznoscmax == skutecznoscmax2)
+                            {
+                              
+                         
+                                if (nazwisko.IndexOf("ski") != -1)
+                                {
+                                    if (imie.Length > 3)
+                                    {
+                                        nazwiskomax = nazwisko;
+                                        imiemax = imie;
+                                        wiekmax = int.Parse(s: wiek);
+                                        //Console.WriteLine("siema");
+                                        if (wiekmax != 0 && imiemax != "0")
+                                        {
+                                            int dlugoscnaz = nazwiskomax.Length;
+                                            dlugoscnaz = dlugoscnaz - 4;
+                                            nazwiskomax = nazwiskomax.Remove(1, 4);
+                                            string gwiazdki = "*";
+                                            gwiazdki = gwiazdki.PadLeft(dlugoscnaz, '*');
+                                            nazwiskomax = nazwiskomax.Insert(1, gwiazdki); ;
+
+
+                                            sr2.WriteLine(imiemax + " " + nazwiskomax + " " + wiekmax + " " + skutecznoscmax + "%");
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                   
+                }
+            }
+            Console.ReadKey();
+        }
+
+    }
+}
