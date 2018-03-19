@@ -1,0 +1,147 @@
+# C-home
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+//Wykorzystując implementację stosu z 1 zadania, napisz
+//w dowolnym języku programowania obiektowego klasę Stos.
+//Klasa ta powinna posiadać 7 metod:
+//        pop
+//        push
+//        top
+//        empty
+//        full
+//          init
+//        destroy
+//    Następnie stwórz 2 stosy: do pierwszego wczytaj 10 
+//    liczb z klawiatury a drugim posłuż się, żeby 
+//    wypisać liczby ze stosu pierwszego na ekran i 
+//    aby po ich wypisaniu miał on taką samą zawartość 
+//    jak przed wypisaniem.Uwaga: wypisywać liczby ze stosu
+//    możesz tylko przy użyciu jego metod - niedopuszczalne
+//    jest sięganie do pól Stosu!
+
+//Możesz wybrać dowolną implementację stosu.
+namespace Zad_3_PO_Stos
+{
+
+     class Losowanie1
+    {
+            public int zakres(int min, int max)
+            {
+                Random kostek = new Random(); 
+                return kostek.Next(min, max);
+            }
+        
+    }
+     class Stos1
+    {
+        int[] tab;
+        int wierzcholek;
+        
+
+        public void Init(int rozmiar)
+        {
+            tab = new int[rozmiar];
+            wierzcholek = -1; 
+        }
+        public void Desroy()
+        {
+            while (wierzcholek != -1) 
+            {
+                tab[wierzcholek] = 0;
+                --wierzcholek;
+
+            }
+        }
+        public void Push(int l)
+        {
+            if (!Full())
+            {
+                tab[++wierzcholek] = l;
+            }
+        }
+        public void Pop()
+        {
+            --wierzcholek;
+        }
+        public int Top()
+        {
+            return tab[wierzcholek];
+        }
+        public bool Empty()
+        {
+            return wierzcholek == -1;
+        }
+        public bool Full()
+        {
+            return wierzcholek == tab.Length - 1;
+        }
+        public void Dod()
+        {
+            ++wierzcholek;
+        }
+
+
+    }
+    class Program
+    {
+    
+        static void Main(string[] args)
+        {
+            Losowanie1 losowacz = new Losowanie1();
+            int los = losowacz.zakres(10, 20);
+            Stos1 stos = new Stos1();
+            stos.Init(los);
+            Console.WriteLine("Stos1 ma {0} pól. (liczba jest losowa)", los);
+            if (stos.Empty())
+            {
+                Console.WriteLine("Stos1 jest pusty.");
+            }
+            Console.WriteLine("Podaj 10 wartości które chcesz płożyć na stosie");
+            for(int i=0; i<10; i++)
+            {
+                stos.Push(Convert.ToInt32(Console.ReadLine()));
+            }
+            if (stos.Full())
+            {
+                Console.WriteLine("Stos1 jest pełny");
+            }
+            else
+            {
+                Console.WriteLine("Stos1 nie jest pełny");
+            }
+            Stos1 stos2 = new Stos1(); // drugi stos
+            stos2.Init(10);
+         
+            while (!stos.Empty())
+            {
+      
+                stos2.Push(stos.Top());
+                stos.Pop();
+            }
+            Console.WriteLine("Liczby w stosie drugim");
+            if (stos2.Full())
+            {
+                Console.WriteLine("Stos2 jest pełny");
+            }
+            else
+            {
+                Console.WriteLine("Stos2 nie jest pełny");
+            }
+            while (!stos2.Empty())
+            {
+               
+                Console.WriteLine(stos2.Top());
+                stos2.Pop();
+                stos.Dod();
+            }
+            Console.WriteLine("Stos1 ma taką samą wartość, na górze znajduje się {0}", stos.Top());
+            stos.Desroy();
+            stos2.Desroy();
+            Console.ReadKey();
+        }
+    }
+}
