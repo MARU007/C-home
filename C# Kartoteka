@@ -1,0 +1,201 @@
+# C-home
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+namespace POZAD5
+{
+    /* W języku Java/C# napisz klasę Osoba i 2 alternatywne implementacje interfejsu Kartoteka:
+
+     pierwsza ma "udawać", że jest funkcjonalną klasą(klasa typu mockup):
+         metody dodaj i usun są puste
+         metoda rozmiar zwraca zawsze 1
+         metoda czyZawiera zwraca zawsze true
+         metoda pobierz zwraca zawsze new Osoba("Gall", "Anonim")
+     druga ma zawierać rzeczywistą implementację*/
+    /*Każdą z klas napisz w oddzielnym pakiecie/przestrzeni nazw:
+
+    kartoteka.Osoba
+    kartoteka.mockup.Kartoteka
+    kartoteka.impl.Kartoteka
+    */
+
+    //using POZAD5.kartoteka.impl;
+    using POZAD5.kartoteka.mockup;
+
+   
+        internal class Program
+        {
+            private static void Main(string[] args)
+            {
+                Kartoteka kartoteka1 = new Kartoteka();
+                string imie, nazwisko;
+                while (true)
+                {
+                    Console.Clear();
+                    Console.WriteLine("\t\t<<<KARTOTEKA OSÓB>>>\n");
+                    Console.WriteLine("MENU");
+                    Console.WriteLine("1.Dodawanie osoby do listy");
+                    Console.WriteLine("2.Usunięcie osoby z listy");
+                    Console.WriteLine("3.Rozmiar listy osób w kartotece");
+                    Console.WriteLine("4.Wyszukiwanie danej osoby po imieniu i nazwisku");
+                    Console.WriteLine("5.Wyszukiwanie danej osoby po numerze");
+                    Console.WriteLine("6.EXIT");
+
+
+                    string pom = Console.ReadLine();
+               
+                     int a;
+                     if (!Int32.TryParse(pom, out a)) continue;
+                    
+                     if (a == 6) break;
+                    switch (a)
+                    {
+                        case 1:
+                            Console.WriteLine("\nDodawane");
+                            Console.WriteLine("Podaj imię");
+                            imie = Console.ReadLine();
+                            Console.WriteLine("Podaj nazwisko:");
+                            nazwisko = Console.ReadLine();
+                            Osoba1 osoba = new Osoba1(imie, nazwisko);
+                            kartoteka1.dodaj(osoba);
+                            Console.ReadKey();
+                            break;
+                        case 2:
+                            Console.WriteLine("\nUsuwanie\nPodaj imię osoby którą chcesz usunąć");
+                            imie = Console.ReadLine();
+                            int nazwiska = kartoteka1.CalyHEAD1(imie);          //wyłączyć przy zmianie kartoteki na impl
+                            if (nazwiska == 0) break;                              //
+                            Console.WriteLine("Podaj nazwiko z listy której osobę chcesz usnąć");
+                            nazwisko = Console.ReadLine();
+                            Osoba1 osoba2 = new Osoba1(imie, nazwisko);
+                            kartoteka1.usun(osoba2);
+                            Console.ReadKey();
+                            break;
+                        case 3:
+                            Console.WriteLine("Na liście znajduje się {0}.", kartoteka1.rozimiar());
+                            Console.ReadKey();
+                            break;
+                        case 4:
+                            Console.WriteLine("Podaj imię");
+                            imie = Console.ReadLine();
+                            Console.WriteLine("Podaj nazwisko:");
+                            nazwisko = Console.ReadLine();
+                            bool zawiera = kartoteka1.CzyZawiera(new Osoba1(imie, nazwisko));
+                            if (zawiera == true) Console.WriteLine("Kartoteka zawiera taką osobę");
+                            else Console.WriteLine("Kartoteka nie zawiera takiej osoby");
+                            Console.ReadKey();
+                            break;
+                        case 5:
+                            Console.WriteLine("Podaj numer osoby którą chcesz znaleść");
+                            int numerosoby = Int32.Parse(Console.ReadLine());
+                            Osoba1 osoba3 = kartoteka1.pobierz(numerosoby);
+                            string s1 = osoba3.getImie(), s2 = osoba3.getNazwisko();
+
+                            if (s1 != null) Console.WriteLine("Znaleziona osoba to  " + s1 + " " + s2);
+                            Console.ReadKey();
+                            break;
+                    }
+                }
+                Console.ReadKey();
+
+            }
+        }
+    
+    namespace kartoteka.impl
+    {
+        class Kartoteka//: Interface1 
+        {
+            List<Osoba1> HEAD1 = new List<Osoba1>();
+
+            public void dodaj(Osoba1 dane)
+            {
+
+            }
+            public void usun(Osoba1 dane)
+            {
+
+            }
+            public int rozimiar()
+            {
+                return 1;
+            }
+            public bool CzyZawiera(Osoba1 dane)
+            {
+                return true;
+            }
+            public Osoba1 pobierz(int liczba_oboby)
+            {
+                string a = "Gal", b = "Anonim";
+                return new Osoba1(a, b);
+            }
+        }
+    }
+}
+  class Kartoteka: Interface1
+        {
+            List<Osoba1> HEAD1 = new List<Osoba1>();
+
+            public void dodaj(Osoba1 dane)
+            {
+                HEAD1.Add(dane);
+            }
+            public void usun(Osoba1 dane)
+            {
+                String imie, nazwisko;
+                imie = dane.getImie();
+                nazwisko = dane.getNazwisko();
+                int pom = HEAD1.Count();
+                for(int i = 0; i < pom ; i++)
+                {
+                    if ((HEAD1[i].getImie()==imie) && (HEAD1[i].getNazwisko()==nazwisko) )  
+                    {
+                        HEAD1.RemoveAt(i);
+                    }
+                }
+
+            }
+            public int rozimiar()
+            {
+                return HEAD1.Count;
+            }
+            public bool CzyZawiera(Osoba1 dane)
+            {
+                String imie, nazwisko;
+                imie = dane.getImie();
+                nazwisko = dane.getNazwisko();
+                for (int i = 0; i < HEAD1.Count(); i++)
+                {
+                    if (HEAD1[i].getImie() == imie && HEAD1[i].getNazwisko() == nazwisko) return true;
+                }
+                return false;
+            }
+            public Osoba1 pobierz(int liczba_osoby)
+            {
+                if (HEAD1.Count() < liczba_osoby)
+                {
+                    return new Osoba1();
+                }
+                liczba_osoby--;
+                return HEAD1[liczba_osoby];
+            }
+            public int CalyHEAD1(string g)
+            {
+                int j = 0;
+                for (int i = 0; i < HEAD1.Count(); i++)
+                {
+                   
+                    Console.WriteLine("Nazwiska osób z podanym imieniem");
+                    if (HEAD1[i].getImie()==g)
+                    {
+                        j++;
+                        Console.WriteLine(j+" "+ HEAD1[i].getNazwisko());
+                    }
+
+                }
+                if (j == 0) Console.WriteLine("Nie znaleziono osoby o takim imieniu");
+                return j;
+            }
+           
+        }
