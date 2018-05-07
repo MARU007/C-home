@@ -1,0 +1,171 @@
+# C-home
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+
+/*
+Stwórz kolekcję figur geometrycznych dziedziczących ze wspólnej klasy bazowej Figura.
+ * Klasa ta powinna posiadać chronione pole 'kolor', metody dostępowe do tego pola oraz
+ * konstruktor pobierający początkowy kolor figury.
+Z klasy Figura powinny dziedziczyć 2 kolejne klasy: Trojkat (składający się z 3 linii) 
+ * i Czworokat (składający się z 4 linii). Każda z nich powinna posiadać tylko jeden
+ * konstruktor pobierający kolor i 3 lub 4 punkty, z których konstruują swoje linie. 
+Następnie dopisz 2 klasy: Kwadrat -> Prostokat -> Czworokat -> Figura. Do skonstruowania
+ * prostokąta wystarczy podać, oprócz koloru, 2 punkty (np. lewy-górny i prawy-dolny),
+ * zaś do skonstruowania kwadratu - 1 punkt (np. lewy-górny) i długość boku. Wg tych zasad 
+ * zaprojektuj odpowiednie konstruktory, pamiętając przy tym, że muszą one "wywoływać"
+ * konstruktory klasy bazowej (super, base, ...). Te klasy też powinny posiadać po tylko jednym konstruktorze.
+W programie głównym wykaż, że z napisanych klas można tworzyć obiekty i korzystać z 
+ * odziedziczonych pól i metod.*/
+namespace Zad7
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            List<Figury> lista = new List<Figury>();
+            Console.WriteLine("Prostokąta:");
+            Punkt1 p1 = new Punkt1(5, 5), p2 = new Punkt1(15, 15); // lewy dolny i prawy górny 
+
+            Prostokat LiniaP = new Prostokat(p1,p2, "Czarny");
+
+            lista.Add(LiniaP);
+            Console.WriteLine("Kwadratu:");
+            Punkt1 k1 = new Punkt1(2, 2); // lewy dolny 
+            Kwadrat LiniaK = new Kwadrat(k1, 2, "Biały");
+            lista.Add(LiniaK);
+            int i = 0;
+            foreach (Figury lista1 in lista)
+            {
+                Console.WriteLine(lista[i].ToString() + "\n\n\tKolor: " + lista[i].zwrockolor() + "\n");
+                i++;
+            }
+                               
+            Console.ReadKey();
+        }
+    }
+    class Punkt1
+    {
+        private int x;
+        private int y;
+
+        public Punkt1() { }
+        public Punkt1(int a, int b)
+        {
+            x = a;
+            y = b;
+        }
+        public Punkt1(Punkt1 punkt)
+        {
+            x = punkt.x;
+            y = punkt.y;
+        }
+
+        public int zwrocX()
+        {
+            return x;
+        }
+
+        public int zwrocY()
+        {
+            return y;
+        }
+        public String toString()
+        {
+            return x + ", " + y;
+        }
+    }
+     class Figury
+    {
+            protected String kolor;
+
+            public Figury(String kolor2)
+            {
+            
+                kolor = kolor2;
+            
+            }
+
+            public String zwrockolor()
+            {
+                return kolor;
+            }
+     
+           
+
+    }
+   /* class Trojkat : Figury
+    {
+        private Linia1 linia1, linia2, linia3;
+        public Trojkat(Punkt1 a, Punkt1 b, Punkt1 c, String kolor) : base(kolor)
+        {
+            linia1 = new Linia1(new Punkt1(a), new Punkt1(b));
+            linia2 = new Linia1(new Punkt1(b), new Punkt1(c));
+            linia3 = new Linia1(new Punkt1(c), new Punkt1(a));
+            Console.WriteLine("Test Trójkąta");
+        }
+    }*/
+    class Czworokat : Figury
+    {
+        private Linia1 k1, k2, k3, k4;
+
+        public Czworokat(Punkt1 p1, Punkt1 p2, Punkt1 p3, Punkt1 p4, String kolor) : base(kolor)
+        {
+            k1 = new Linia1(p1, p2);
+            k2 = new Linia1(p2, p3);
+            k3 = new Linia1(p3, p4);
+            k4 = new Linia1(p4, p1);
+            Console.WriteLine("Test Czworokąta");
+        }
+        public override String ToString()
+        {
+            return "Linia1: " + k1.ToString() + " Linia2: " + k2.ToString() +
+                    "Linia 3: " + k3.ToString() + " Linia4: " + k4.ToString();
+        }
+
+    }
+    class Linia1
+    {
+        private Punkt1 pierwsza;
+        private Punkt1 druga;
+
+        public Linia1() { }
+        public Linia1(Punkt1 pom1, Punkt1 pom2)
+        {
+            pierwsza = pom1;
+            druga = pom2;
+        }
+        public Linia1(Linia1 linia)
+        {
+            pierwsza = linia.pierwsza;
+            druga = linia.druga;
+        }
+
+     
+        public String ToString()
+        {
+            return "(" + pierwsza.toString() + "), (" + druga.toString() + ")";
+        }
+    }
+    
+    class Prostokat : Czworokat
+    {
+        public Prostokat(Punkt1 c1, Punkt1 c2, String kolor) : base(c1, new Punkt1(c2.zwrocX(), c1.zwrocY()), c2, new Punkt1(c1.zwrocY(), c2.zwrocX()), kolor)
+        {
+            Console.WriteLine("Test Prostokąt");
+        }
+    }
+
+    class Kwadrat : Prostokat
+    {
+        public Kwadrat(Punkt1 p1, int bok, String Kolor) : base(p1, new Punkt1(p1.zwrocX() + bok, p1.zwrocY() + bok), Kolor)
+        {
+            Console.WriteLine("Test Kwadrat");
+        }
+
+    }
+            
+}
