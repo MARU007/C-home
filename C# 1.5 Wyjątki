@@ -1,0 +1,148 @@
+# C-home
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Diagnostics;
+/*Zaimplementuj klasę(moduł zleceniobiorca) FIFO(First-In-First-Out) reprezentującą kolejkę liczb naturalnych z 
+ * zakresu od 0 do N(N - parametr konstruktora) z ograniczoną pojemnością(pojemność maksymalna to również parametr
+ * konstruktora). Metody kolejki powinny kontrolować poprawność wywołań i w razie potrzeby wyrzucać wyjątki z
+ * odpowiedniej klasy(w ramach programu powinna powstać odpowiednia hierarchia klas wyjątków wywiedziona z klasy Exception).
+ * Minimalny zbiór sytuacji "wyjątkowych" obejmuje:
+     kolejka pusta,
+         kolejka pełna,
+             nieodpowiednia liczba(obiekt wyjątku dodatkowo przechowuje wartość błędnie wpisanej liczby). 
+
+Program(moduł-zleceniodawca) powinien zawierać menu umożliwiające operacje na kolejce oraz reagować na błędy(wyjątki) w następujący sposób:
+    kolejka pusta - zakończenie programu po wypisaniu stosu wyjątku('printStackTrace()'),
+        kolejka pełny - informacje tekstowa oraz wypisanie stosu wyjątku,
+            nieodpowiednia liczba - informacja na ekran(wraz z tę nieodpowiednią liczbą odczytaną z obiektu
+    wyjątku !) i ponowna próba wczytania liczby i włożenia jej do kolejki(do skutku).
+
+Który moduł należy zmodyfikować, żeby zmienić reakcję na konkretną błędną sytuację ?  
+
+---------------------------------------------------------------------------------------------------------------------------------*/
+namespace Wyjątki
+{
+class Stos1
+    {
+        private int[] tab;
+        int indeks = 0, first = -1;
+
+        public Stos1(int rozmiar)
+        {
+            tab = new int[rozmiar];
+        }
+
+        public void dodaj(int dane)
+        {
+            try
+            {
+                if (first != -1 && first == indeks) tab[tab.Length] = dane;
+                
+                tab[indeks] = dane;
+
+                if (indeks == 0 && first == -1) first++;
+                
+            }
+            catch (IndexOutOfRangeException eu)
+            {
+                Console.WriteLine("Stos jest pełny!");
+                foreach (int a in tab)
+                {
+                    Console.WriteLine(a);
+                }
+            }
+            
+            indeks++;
+            if (indeks == tab.Length&& first!=0)
+            {
+                indeks = 0;
+            }
+            
+        }
+        public void usun()
+        {
+            try
+            {
+                
+                Console.WriteLine("Usunięto {0}", tab[first]);
+                first++;
+                if (first == indeks) first = -1;
+                if (first == tab.Length) first= -1;
+               
+               
+            }
+            catch (IndexOutOfRangeException eu2)
+            {
+                Console.WriteLine("Stos jest pusty!");
+                Console.WriteLine(eu2.Message);
+                StackTrace st = new StackTrace();
+
+                StackFrame sf = st.GetFrame(0);
+                Console.WriteLine();
+                Console.WriteLine("  Exception w  ");
+                Console.WriteLine("  {0}", sf.GetMethod());
+                Console.ReadKey();
+                System.Diagnostics.Process.GetCurrentProcess().Kill();
+            }
+        }
+
+
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("MENU");
+
+            Stos1 stos = new Stos1(5);
+            while (true)
+            {
+
+                Console.WriteLine("1. Dodaj liczbę");
+                Console.WriteLine("2. Usuń liczbę");
+                Console.WriteLine("3. EXIT");
+                string wybor;
+                wybor = Console.ReadLine();
+                int wybor2;
+
+                if (!Int32.TryParse(wybor, out wybor2)) continue;
+                if (!(wybor2 < 4 && wybor2 > 0)) continue;
+                switch (wybor2)
+                {
+                    case 1:
+                        string pom;
+                        int dane = 0;
+                        Console.WriteLine("Podaj liczbę");
+                        pom = Console.ReadLine();
+                        try
+                        {
+                            dane = Int32.Parse(pom);
+                            stos.dodaj(dane);
+                        }
+                        catch (FormatException Ex)
+                        {
+                         Console.WriteLine(Ex.Message + " Zły znak: " + pom);
+                         StackTrace st = new StackTrace();
+ 
+                         StackFrame sf = st.GetFrame(0);
+                         Console.WriteLine();
+                         Console.WriteLine("  Exception w  ");
+                         Console.WriteLine("  {0}", sf.GetMethod());
+                         Console.WriteLine("Spróbuj jeszcze raz");
+
+                        }
+                        break;
+                    case 2:
+                        stos.usun();
+                        break;
+             
+                }
+                if (wybor2 == 3) break;
+            }
+                   
+        }
+    }
+}
